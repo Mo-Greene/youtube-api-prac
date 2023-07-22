@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유튜브 타이틀 가져오는거</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    <script src="./main.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+    <input
+            id="ipt"
+            type="text"
+            value=""
+            placeholder="유튜브 url">
+    <button type="button" onclick="submit_post()">등록</button>
+</div>
+<div id="myDiv"></div>
+
+</body>
+
+<script>
+
+    let youtube = {
+        "id" : null,
+        "url" : null,
+        "thumbnail" : null,
+        "title" : null
+    };
+
+    const NOEMBED = 'https://noembed.com/embed?url=';
+
+    function submit_post() {
+        console.log('event!')
+        const ipt = document.getElementById('ipt')
+        //youtube url
+        youtube.url = ipt.value;
+
+        //youtube id
+        youtube.id = getInfo(youtube.url);
+
+        getEmbed(youtube.url);
+    }
+
+    //유튜브 id 추출
+    function getInfo(url) {
+        console.log('getInfo start');
+        const pattern = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/i;
+
+        const match = url.match(pattern);
+
+        return match[1];
+    }
+
+    //embed api 사용
+    function getEmbed(url) {
+        const fullUrl = NOEMBED + url;
+
+        const youtubeDTO = {
+            "thumbnail" : "",
+            "url" : "",
+            "title" : ""
+        }
+        fetch(fullUrl)
+                .then(res => res.json())
+                .then(data=>{
+                    console.log(data);
+                    const {thumbnail_url, url, title} = data;
+                    youtubeDTO.thumbnail = thumbnail_url;
+                    youtubeDTO.url = url;
+                    youtubeDTO.title = title;
+
+                    console.log(youtubeDTO)
+                    //postYoutubeApi callback
+                    postYoutubeApi(youtubeDTO);
+                });
+    }
+
+    //callback postYoutubeApi
+    function postYoutubeApi(youtubeDTO) {
+
+        console.log('youtubeDto : ' + youtubeDTO);
+
+        $.ajax({
+            type: 'POST',
+            url : "/youtube",
+            data: JSON.stringify(youtubeDTO),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.log(error)
+            },
+        })
+    }
+</script>
+</html>
