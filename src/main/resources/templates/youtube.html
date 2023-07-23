@@ -35,7 +35,6 @@
     const NOEMBED = 'https://noembed.com/embed?url=';
 
     function submit_post() {
-        console.log('event!')
         const ipt = document.getElementById('ipt')
         //youtube url
         youtube.url = ipt.value;
@@ -48,11 +47,11 @@
 
     //유튜브 id 추출
     function getInfo(url) {
-        console.log('getInfo start');
         const pattern = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/ ]{11})/i;
 
         const match = url.match(pattern);
 
+        console.log('match : ', match)
         return match[1];
     }
 
@@ -64,20 +63,27 @@
             "thumbnail" : "",
             "url" : "",
             "title" : ""
-        }
-        fetch(fullUrl)
-                .then(res => res.json())
-                .then(data=>{
-                    console.log(data);
-                    const {thumbnail_url, url, title} = data;
-                    youtubeDTO.thumbnail = thumbnail_url;
-                    youtubeDTO.url = url;
-                    youtubeDTO.title = title;
+        };
 
-                    console.log(youtubeDTO)
-                    //postYoutubeApi callback
-                    postYoutubeApi(youtubeDTO);
-                });
+        $.ajax({
+            type: 'GET',
+            url: fullUrl,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                const { thumbnail_url, url, title } = data;
+                youtubeDTO.thumbnail = thumbnail_url;
+                youtubeDTO.url = url;
+                youtubeDTO.title = title;
+
+                console.log(youtubeDTO);
+
+                postYoutubeApi(youtubeDTO);
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        })
     }
 
     //callback postYoutubeApi
