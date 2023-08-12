@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.youtubeapiprac.mapper.ResumeMapper">
+    <!--insert dto 객체-->
+    <insert id="insertResume" parameterType="ResumeRequest">
+        INSERT INTO resume (resumeName,
+                            resumeBirth,
+                            resumePhoneNumber,
+                            resumeAddress,
+                            resumePersonalStatement)
+        VALUES (#{resumeName},
+                #{resumeBirth},
+                #{resumePhoneNumber},
+                #{resumeAddress},
+                #{resumePersonalStatement})
+
+        <selectKey keyProperty="resumeNo" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        <foreach collection="resumeEducations" item="education" separator=";">
+            INSERT INTO resumeEducation (resumeNo,
+                                         school,
+                                         graduateStatus,
+                                         duration)
+            VALUES (#{resumeNo},
+                    #{education.school},
+                    #{education.graduateStatus},
+                    #{education.duration})
+        </foreach>
+
+        <foreach collection="resumeCareers" item="career" separator=";">
+            INSERT INTO resumeCareer (resumeNo,
+                                      duration,
+                                      history,
+                                      position,
+                                      duty)
+            VALUES (#{resumeNo},
+                    #{career.duration},
+                    #{career.history},
+                    #{career.position},
+                    #{career.duty})
+        </foreach>
+
+        <foreach collection="resumeCertifications" item="certification" separator=";">
+            INSERT INTO resumeCertification (resumeNo,
+                                             acquisitionDate,
+                                             certificationName,
+                                             publisher,
+                                             passStatus)
+            VALUES (#{resumeNo},
+                    #{certification.acquisitionDate},
+                    #{certification.certificationName},
+                    #{certification.publisher},
+                    #{certification.passStatus})
+        </foreach>
+    </insert>
+
+</mapper>
