@@ -10,6 +10,7 @@ import lombok.*;
 @ToString
 public class ResumeCertification {
 
+    private Long resumeNo;
     private String acquisitionDate;
     private String certificationName;
     private String publisher;

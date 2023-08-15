@@ -1,5 +1,8 @@
 package com.example.youtubeapiprac.service;
 
+import com.example.youtubeapiprac.dto.resume.ResumeCareer;
+import com.example.youtubeapiprac.dto.resume.ResumeCertification;
+import com.example.youtubeapiprac.dto.resume.ResumeEducation;
 import com.example.youtubeapiprac.dto.resume.ResumeRequest;
 import com.example.youtubeapiprac.mapper.ResumeMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +20,11 @@ public class ResumeService {
 
     public ResponseEntity<?> insertResume(ResumeRequest resumeRequest) {
 
-        log.info("resumeRequest : " + resumeRequest);
-        log.info("list : " + resumeRequest.getResumeCareers());
-        log.info("list : " + resumeRequest.getResumeEducations());
-        log.info("list : " + resumeRequest.getResumeCertifications());
-
-        int result = resumeMapper.insertResume(resumeRequest);
+        Long result = resumeMapper.insertResume(resumeRequest);
         if (result > 0) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Success", HttpStatus.OK);
         }
+
+        return new ResponseEntity<>("BadRequest", HttpStatus.BAD_REQUEST);
     }
 }

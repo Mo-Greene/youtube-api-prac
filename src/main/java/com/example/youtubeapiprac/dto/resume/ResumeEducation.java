@@ -10,6 +10,7 @@ import lombok.*;
 @ToString
 public class ResumeEducation {
 
+    private Long resumeNo;
     private String school;
     private String graduateStatus;
     private String duration;

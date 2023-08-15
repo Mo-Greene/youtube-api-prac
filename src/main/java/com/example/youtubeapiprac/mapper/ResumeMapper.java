@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ResumeMapper {
 
-    int insertResume(ResumeRequest resumeRequest);
+    Long insertResume(ResumeRequest resumeRequest);
 }

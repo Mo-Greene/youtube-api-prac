@@ -10,6 +10,7 @@ import lombok.*;
 @ToString
 public class ResumeCareer {
 
+    private Long resumeNo;
     private String duration;
     private String history;
     private String position;

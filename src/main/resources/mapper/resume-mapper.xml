@@ -3,6 +3,10 @@
 <mapper namespace="com.example.youtubeapiprac.mapper.ResumeMapper">
     <!--insert dto 객체-->
     <insert id="insertResume" parameterType="ResumeRequest">
+        <selectKey keyProperty="resumeNo" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
         INSERT INTO resume (resumeName,
                             resumeBirth,
                             resumePhoneNumber,
@@ -14,46 +18,45 @@
                 #{resumeAddress},
                 #{resumePersonalStatement})
 
-        <selectKey keyProperty="resumeNo" resultType="Long" order="BEFORE">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-
-        <foreach collection="resumeEducations" item="education" separator=";">
             INSERT INTO resumeEducation (resumeNo,
-                                         school,
-                                         graduateStatus,
-                                         duration)
-            VALUES (#{resumeNo},
+                                        school,
+                                        graduateStatus,
+                                        duration)
+            VALUES
+                <foreach collection="resumeEducations" item="education" separator=";">
+                    (#{resumeNo},
                     #{education.school},
                     #{education.graduateStatus},
                     #{education.duration})
-        </foreach>
+                </foreach>
 
-        <foreach collection="resumeCareers" item="career" separator=";">
             INSERT INTO resumeCareer (resumeNo,
-                                      duration,
-                                      history,
-                                      position,
-                                      duty)
-            VALUES (#{resumeNo},
+                                    duration,
+                                    history,
+                                    position,
+                                    duty)
+            VALUES
+                <foreach collection="resumeCareers" item="career" separator=";">
+                    (#{resumeNo},
                     #{career.duration},
                     #{career.history},
                     #{career.position},
                     #{career.duty})
-        </foreach>
+                </foreach>
 
-        <foreach collection="resumeCertifications" item="certification" separator=";">
             INSERT INTO resumeCertification (resumeNo,
-                                             acquisitionDate,
-                                             certificationName,
-                                             publisher,
-                                             passStatus)
-            VALUES (#{resumeNo},
+                                            acquisitionDate,
+                                            certificationName,
+                                            publisher,
+                                            passStatus)
+            VALUES
+                <foreach collection="resumeCertifications" item="certification" separator=";">
+                    (#{resumeNo},
                     #{certification.acquisitionDate},
                     #{certification.certificationName},
                     #{certification.publisher},
                     #{certification.passStatus})
-        </foreach>
+                </foreach>
     </insert>
 
 </mapper>
